@@ -98,7 +98,7 @@ def main():
     print("\nStarting Download using aria2...\n")
     theanime.displayEpisodes()
     theanime.displayDownloadLinks()
-    #theanime.downloadEpisodes()
+    theanime.downloadEpisodes()
     print("\n==================== DOWNLOAD FINISHED !!! ====================\n")
 
 main()
