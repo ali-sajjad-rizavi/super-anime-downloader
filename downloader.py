@@ -1,7 +1,7 @@
 import requests as REQ
 from bs4 import BeautifulSoup as BS
-import subprocess as SP
 import re as REGEX
+import os as OS
 
 #-------------------------------------------
 class Anime:
@@ -11,7 +11,7 @@ class Anime:
         animeAlias = animeSoup.find(id="alias_anime")['value']
         animeLastEp = animeSoup.find(id="episode_page").find_all('a')[-1]['ep_end']
         #----private data members------
-        self.__title = animeSoup.title.text.replace(" at Gogoanime", '')
+        self.__title = animeSoup.title.text.replace("at Gogoanime", '').strip()
         self.__mainpageURL = url
         self.__ajaxURL = "https://ajax.gogocdn.net/ajax/load-list-episode?ep_start=0&ep_end=" + animeLastEp + "&id=" + animeID + "&default_ep=0&alias=" + animeAlias
         self.__ajaxSoup = BS(REQ.get(self.__ajaxURL).text, 'html.parser')
@@ -80,13 +80,12 @@ class Episode:
         else:
             print("===== DOWNLOADING EPISODE:", self.__title.replace(' ', '_'))
             options = " -x 10 --max-tries=5 --retry-wait=10 --check-certificate=false -d downloaded -o " + self.__title.replace(' ', '_') + ".mp4"
-            SP.call(("aria2c " + self.get_Mp4UploadDownloadLink() + options).split())
+            #SP.call(("aria2c " + self.get_Mp4UploadDownloadLink() + options).split())
+            OS.system("aria2c " + self.getMp4UploadDownloadLink() + options)
 #-------------------------------------------
 
 ###
-#https://www16.gogoanime.io/category/sin-nanatsu-no-taizai-dub
-#https://www16.gogoanime.io/sin-nanatsu-no-taizai-dub-episode-4
-#https://ajax.gogocdn.net/ajax/load-list-episode?ep_start=0&ep_end=70&id=7451&default_ep=0&alias=douluo-dalu-2nd-season
+#### MAIN ROUTINE ###
 ###
 
 def main():
