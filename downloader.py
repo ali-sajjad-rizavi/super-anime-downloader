@@ -4,6 +4,27 @@ import re as REGEX
 import os as OS
 
 #-------------------------------------------
+
+class FailedContainer:
+    failedCommandsList = []
+    def addFailedCommand(cmd):
+        FailedContainer.failedCommandsList.append(cmd)
+    def retryFailedDownloads():
+        print("\n\n\n There were", len(FailedContainer.failedCommandsList), "failed downloads which can be resumed...")
+        print(" If they fail again, there might be a server issue with these links.")
+        while True:
+            choice = input(" Do you want to retry downloading these Episodes? (Y/N): ")
+            if choice == 'y' or choice == 'Y':
+                break
+            if choice == 'n' or choice == N:
+                return
+        i = 1
+        for cmd in FailedContainer.failedCommandsList:
+            print("\n===========[ Retrying download #", i, "]\n")
+            OS.system(cmd)
+            i += 1
+
+#-------------------------------------------
 class Anime:
     def __init__(self, url):
         animeSoup = BS(REQ.get(url).text, 'html.parser')
@@ -81,12 +102,15 @@ class Episode:
             print("===== DOWNLOADING EPISODE:", self.__title.replace(' ', '_'))
             options = " -x 10 --max-tries=5 --retry-wait=10 --check-certificate=false -d downloaded -o " + self.__title.replace(' ', '_') + ".mp4"
             #SP.call(("aria2c " + self.get_Mp4UploadDownloadLink() + options).split())
-            OS.system("aria2c " + self.getMp4UploadDownloadLink() + options)
-#-------------------------------------------
+            cmd = "aria2c " + self.get_Mp4UploadDownloadLink() + options
+            OS.system(cmd)
+            if OS.path.isfile(OS.path.join("downloaded", self.__title.replace(' ', '_') + ".mp4.aria2")):
+                FailedContainer.addFailedCommand(cmd)
+#--------------------------------------------------------------------
 
-###
-#### MAIN ROUTINE ###
-###
+###----------------###
+#### MAIN ROUTINE ####
+###----------------###
 
 def main():
     print("\n====================[ Gogoanime Downloader ]====================\n")
@@ -98,6 +122,8 @@ def main():
     theanime.displayEpisodes()
     theanime.displayDownloadLinks()
     theanime.downloadEpisodes()
+    FailedContainer.retryFailedDownloads()
     print("\n==================== DOWNLOAD FINISHED !!! ====================\n")
+    OS.rename("downloaded", theanime.getTitle())
 
 main()
