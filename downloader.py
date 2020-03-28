@@ -2,6 +2,7 @@ import requests as REQ
 from bs4 import BeautifulSoup as BS
 import re as REGEX
 import os as OS
+import subprocess as SP
 
 #-------------------------------------------
 
@@ -16,7 +17,7 @@ class FailedContainer:
             choice = input(" Do you want to retry downloading these Episodes? (Y/N): ")
             if choice == 'y' or choice == 'Y':
                 break
-            if choice == 'n' or choice == N:
+            if choice == 'n' or choice == 'N':
                 return
         i = 1
         for cmd in FailedContainer.failedCommandsList:
@@ -101,9 +102,11 @@ class Episode:
         else:
             print("===== DOWNLOADING EPISODE:", self.__title.replace(' ', '_'))
             options = " -x 10 --max-tries=5 --retry-wait=10 --check-certificate=false -d downloaded -o " + self.__title.replace(' ', '_') + ".mp4"
-            #SP.call(("aria2c " + self.get_Mp4UploadDownloadLink() + options).split())
             cmd = "aria2c " + self.get_Mp4UploadDownloadLink() + options
-            OS.system(cmd)
+            if OS.name == 'posix':
+                SP.call(cmd.split())
+            else:
+                OS.system(cmd)
             if OS.path.isfile(OS.path.join("downloaded", self.__title.replace(' ', '_') + ".mp4.aria2")):
                 FailedContainer.addFailedCommand(cmd)
 #--------------------------------------------------------------------
