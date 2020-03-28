@@ -2,7 +2,8 @@
 This repository consists of a python console application (GUI will be added soon) which takes a Anime URL as input and downloads the range of episodes you specify.
 
 # Packages needed
-requests, bs4 (BeautifulSoup), subprocess, re
+requests, bs4 (BeautifulSoup), os, re
+
 Some of them are available by default, especially if you have anaconda installed.
 You can insatll them using pip.
 
@@ -29,3 +30,17 @@ I am not responsible for the content you download using this script.
 The downloaded videos will by present in "CurrentWorkingDirectory/downloaded" folder.
 
 Please report if there are any issues so that this tool can be further improved!
+
+# HOW TO USE?
+
+Just copy the link of the Anime you want to download. For now, this script only supports
+the Anime links from GoGoAnime (See: https://www.gogoanime.io) but more websites support
+will be added later.
+
+After link is copied:
+- Run downloader.py using python3.
+- Paste the Anime link in the terminal/command-prompt and press ENTER.
+- Provide the range of episodes you want to download.
+
+Note:- The anime will be downloaded in a folder inside the current working directory where
+the downloader.py exists. You can move it somewhere else later!
