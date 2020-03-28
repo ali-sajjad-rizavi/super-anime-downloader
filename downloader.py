@@ -4,6 +4,8 @@ import re as REGEX
 import os as OS
 import subprocess as SP
 
+completion_flag = False
+
 #-------------------------------------------
 
 class FailedContainer:
@@ -11,6 +13,8 @@ class FailedContainer:
     def addFailedCommand(cmd):
         FailedContainer.failedCommandsList.append(cmd)
     def retryFailedDownloads():
+        if len(FailedContainer.failedCommandsList) == 0:
+            return
         print("\n\n\n There were", len(FailedContainer.failedCommandsList), "failed downloads which can be resumed...")
         print(" If they fail again, there might be a server issue with these links.")
         while True:
@@ -59,6 +63,7 @@ class Anime:
     def downloadEpisodes(self):
         for episode in reversed(self.__episodeList):
             episode.download()
+        completion_flag = True
     def displayEpisodes(self):
         for ep in reversed(self.__episodeList):
             print(ep.getTitle())
@@ -101,12 +106,17 @@ class Episode:
             print("\n", "::: COULD NOT FIND ::: EPISODE:-", self.__title, "| Server=MP4-UPLOAD\n")
         else:
             print("===== DOWNLOADING EPISODE:", self.__title.replace(' ', '_'))
-            options = " -x 10 --max-tries=5 --retry-wait=10 --check-certificate=false -d downloaded -o " + self.__title.replace(' ', '_') + ".mp4"
-            cmd = "aria2c " + self.get_Mp4UploadDownloadLink() + options
+            options = " -x 10 --max-tries=5 --retry-wait=10 --check-certificate=false -d downloaded -o "
+            episode_filename = self.__title.replace(' ', '_') + ".mp4"
+            cmd = "aria2c " + self.get_Mp4UploadDownloadLink() + options + episode_filename
+            if OS.path.isfile(OS.path.join("downloaded", episode_filename)) and not OS.path.isfile(OS.path.join("downloaded", episode_filename + ".aria2")):
+                return
             if OS.name == 'posix':
-                SP.call(cmd.split())
+                try: SP.call(cmd.split())
+                except KeyboardInterrupt: pass
             else:
-                OS.system(cmd)
+                try: OS.system(cmd)
+                except KeyboardInterrupt: pass
             if OS.path.isfile(OS.path.join("downloaded", self.__title.replace(' ', '_') + ".mp4.aria2")):
                 FailedContainer.addFailedCommand(cmd)
 #--------------------------------------------------------------------
@@ -125,8 +135,10 @@ def main():
     theanime.displayEpisodes()
     theanime.displayDownloadLinks()
     theanime.downloadEpisodes()
-    FailedContainer.retryFailedDownloads()
     print("\n==================== DOWNLOAD FINISHED !!! ====================\n")
-    OS.rename("downloaded", theanime.getTitle())
+    if completion_flag == True:
+        FailedContainer.retryFailedDownloads()
+        OS.rename("downloaded", theanime.getTitle())
+        print("\n=============[ COMPLETED! ]================")
 
 main()
