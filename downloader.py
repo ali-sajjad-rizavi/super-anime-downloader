@@ -32,6 +32,7 @@ class FailedContainer:
 #-------------------------------------------
 class Anime:
     def __init__(self, url):
+        print("Initializing...")
         animeSoup = BS(REQ.get(url).text, 'html.parser')
         animeID = animeSoup.find(id="movie_id")['value']
         animeAlias = animeSoup.find(id="alias_anime")['value']
@@ -63,13 +64,19 @@ class Anime:
     def downloadEpisodes(self):
         for episode in reversed(self.__episodeList):
             episode.download()
-        completion_flag = True
     def displayEpisodes(self):
         for ep in reversed(self.__episodeList):
             print(ep.getTitle())
     def displayDownloadLinks(self):
         for epis in reversed(self.__episodeList):
             epis.get_Mp4UploadDownloadLink()
+    def finalizeAnime(self):
+        for epis in self.__episodeList:
+            isEpisFile = OS.path.isfile(OS.path.join("downloaded", epis.getTitle().replace(' ', '_') + ".mp4"))
+            isAriaFile = OS.path.isfile(OS.path.join("downloaded", epis.getTitle().replace(' ', '_') + ".mp4.aria2"))
+            if not isEpisFile or isAriaFile: return
+        OS.rename("downloaded", self.__title)
+
     def playEpisodesOnline(self):
         pass
 #-------------------------------------------
@@ -105,7 +112,9 @@ class Episode:
         if self.__mp4uploadEmbed is "not_found":
             print("\n", "::: COULD NOT FIND ::: EPISODE:-", self.__title, "| Server=MP4-UPLOAD\n")
         else:
-            print("===== DOWNLOADING EPISODE:", self.__title.replace(' ', '_'))
+            print("============================================================================")
+            print(" DOWNLOADING EPISODE:", self.__title.replace(' ', '_'))
+            print("============================================================================")
             options = " -x 10 --max-tries=5 --retry-wait=10 --check-certificate=false -d downloaded -o "
             episode_filename = self.__title.replace(' ', '_') + ".mp4"
             cmd = "aria2c " + self.get_Mp4UploadDownloadLink() + options + episode_filename
@@ -126,19 +135,22 @@ class Episode:
 ###----------------###
 
 def main():
-    print("\n====================[ Gogoanime Downloader ]====================\n")
-    theanime = Anime(input("\t - Enter Anime main-page URL: "))
-    print(" -FOUND:", theanime.getTotalEpisodeCount(), " Episodes in TOTAL!")
-    theanime.collectEpisodes(int(input("\t - Start From Episode:")), int(input("\t - End At Episode:")))
-    #os.system("cls")
+    print("\t\t|==================|")
+    print("\t\t| ANIME DOWNLOADER |")
+    print("\t\t|==================|\n")
+    theanime = Anime(input(" - Enter Anime main-page URL: "))
+    print("\t -FOUND:", theanime.getTotalEpisodeCount(), " Episodes in TOTAL!\n")
+    theanime.collectEpisodes(int(input("\t - Start From Episode: ")), int(input("\t - End At Episode: ")))
     print("\nStarting Download using aria2...\n")
     theanime.displayEpisodes()
-    theanime.displayDownloadLinks()
+    #theanime.displayDownloadLinks()
     theanime.downloadEpisodes()
-    print("\n==================== DOWNLOAD FINISHED !!! ====================\n")
-    if completion_flag == True:
-        FailedContainer.retryFailedDownloads()
-        OS.rename("downloaded", theanime.getTitle())
-        print("\n=============[ COMPLETED! ]================")
+    print("=======================================================")
+    print("-------------------- COMPLETED !!! --------------------")
+    print("=======================================================")
+    FailedContainer.retryFailedDownloads()
+    print("Checking downloads...")
+    theanime.finalizeAnime()
+    print("Done!")
 
 main()
