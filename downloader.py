@@ -121,11 +121,17 @@ class Episode:
             if OS.path.isfile(OS.path.join("downloaded", episode_filename)) and not OS.path.isfile(OS.path.join("downloaded", episode_filename + ".aria2")):
                 return
             if OS.name == 'posix':
-                try: SP.call(cmd.split())
-                except KeyboardInterrupt: pass
+                while True:
+                    try:
+                        SP.call(cmd.split())
+                        break
+                    except KeyboardInterrupt: input("\nDownloader is paused. PRESS [ENTER] TO CONTINUE...")
             else:
-                try: OS.system(cmd)
-                except KeyboardInterrupt: pass
+                while True:
+                    try:
+                        OS.system(cmd)
+                        break
+                    except KeyboardInterrupt: input("\nDownloader is paused. PRESS [ENTER] TO CONTINUE...")
             if OS.path.isfile(OS.path.join("downloaded", self.__title.replace(' ', '_') + ".mp4.aria2")):
                 FailedContainer.addFailedCommand(cmd)
 #--------------------------------------------------------------------
