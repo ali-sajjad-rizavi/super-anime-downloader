@@ -43,5 +43,12 @@ After link is copied:
 - Paste the Anime link in the terminal/command-prompt and press ENTER.
 - Provide the range of episodes you want to download.
 
+PAUSE AN ONGOING DOWNLOADE:
+Press [Ctrl+C] to pause download. To exit, press [Ctrl+C] again.
+
+RESUME DOWNLOADS:
+Run program again, already downloaded episodes will not be downloaded again.
+The episodes which are partially downloaded, will automatically resume from where they stopped.
+
 Note:- The anime will be downloaded in a folder inside the current working directory where
 the downloader.py exists. You can move it somewhere else later!
