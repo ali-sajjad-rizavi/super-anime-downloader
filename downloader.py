@@ -92,7 +92,8 @@ class Episode:
 
     def get_Mp4UploadDownloadLink(self):
         scripts = BS(REQ.get(self.__mp4uploadEmbed).text, 'html.parser').find_all('script', type="text/javascript")
-        evalText = scripts[len(scripts)-1].text
+        evalText = [script.text for script in scripts if "navigator" in script.text][0]
+        #evalText = scripts[len(scripts)-1].text
         evalItems = evalText.split('|')
         del evalItems[:evalItems.index('navigator')+1]
         videoID = [a for a in evalItems if len(a)>30][0]
