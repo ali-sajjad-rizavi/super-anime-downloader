@@ -100,7 +100,6 @@ class Episode:
         #
         evalItems = evalText.split('|')
         w3strPossiblesList = [s for s in evalItems if REGEX.match('s\d+$', s) or REGEX.match('www\d+$', s)]
-        print("\n", w3strPossiblesList, "\n")
         w3str = "www"
         if len(w3strPossiblesList) is not 0:
             w3str = max(w3strPossiblesList, key=len)
