@@ -98,7 +98,9 @@ class Episode:
         del evalItems[:evalItems.index('navigator')+1]
         videoID = [a for a in evalItems if len(a)>30][0]
         #
-        w3strPossiblesList = REGEX.findall(r'{|s\d{1,999}|}|{|www\d{1,999}|}', evalText)
+        evalItems = evalText.split('|')
+        w3strPossiblesList = [s for s in evalItems if REGEX.match('s\d+$', s) or REGEX.match('www\d+$', s)]
+        print("\n", w3strPossiblesList, "\n")
         w3str = "www"
         if len(w3strPossiblesList) is not 0:
             w3str = max(w3strPossiblesList, key=len)
