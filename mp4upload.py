@@ -29,9 +29,6 @@ class Mp4UploadGenerator:
 ######
 
 # A sample Mp4Upload embedded URL: https://www.mp4upload.com/embed-99r0hr81zk9k.html
-# --------------------------------
-# Sin: Nanatsu No Taizai (Dub)
-# https://www13.mp4upload.com:282/d/q2xr4yc2z3b4quuov2uuwkqrivisomi62h6rmymsgbsnnwvlepoaguzp/video.mp4
 
 def main():
 	print('\t\t=====================')
