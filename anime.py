@@ -22,6 +22,9 @@ class Anime:
     def getTitle(self):
         return self.__title
 
+    def getEpisodeList(self):
+        return self.__episodeList
+
     def getTotalEpisodeCount(self):
         return self.__eptotal
 
