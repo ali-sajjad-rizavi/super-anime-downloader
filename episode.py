@@ -21,6 +21,11 @@ class Episode:
     def getTitle(self):
         return self.__title
 
+    def is_mp4Upload_available(self):
+        if self.__mp4uploadEmbed == 'not_found':
+            return False
+        return True
+
 ######
 ######
 ######
