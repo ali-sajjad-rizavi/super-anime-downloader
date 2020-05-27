@@ -23,7 +23,7 @@ class Anime:
         return self.__title
 
     def getEpisodeList(self):
-        return self.__episodeList
+        return reversed(self.__episodeList)
 
     def getTotalEpisodeCount(self):
         return self.__eptotal
@@ -48,10 +48,10 @@ class Anime:
 
     def finalizeAnime(self):
         for epis in self.__episodeList:
-            isEpisFile = OS.path.isfile(OS.path.join("downloaded", epis.getTitle().replace(' ', '_') + ".mp4"))
-            isAriaFile = OS.path.isfile(OS.path.join("downloaded", epis.getTitle().replace(' ', '_') + ".mp4.aria2"))
+            isEpisFile = os.path.isfile("downloaded/" + epis.getTitle().replace(' ', '_') + ".mp4")
+            isAriaFile = os.path.isfile("downloaded/" + epis.getTitle().replace(' ', '_') + ".mp4.aria2")
             if not isEpisFile or isAriaFile: return
-        OS.rename("downloaded", self.__title)
+        os.rename("downloaded", self.__title)
 
 
 ######
@@ -59,6 +59,7 @@ class Anime:
 ######
 
 # A sample anime URL: https://www19.gogoanime.io/category/sin-nanatsu-no-taizai-dub
+# OR A SHORT ONE https://www19.gogoanime.io/category/makura-no-danshi
 
 def main():
     print('\t\t=======')
