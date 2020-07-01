@@ -1,57 +1,51 @@
-import requests
+import requests, json, os
 from bs4 import BeautifulSoup
-import os
-from episode import Episode
 
 
-class Anime:
+my_headers = {}
+my_headers['user-agent'] = 'Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36'
+
+
+
+
+class AnimeScraper:
     def __init__(self, url):
-        print("Initializing...")
-        animeSoup = BeautifulSoup(requests.get(url).text, 'html.parser')
-        animeID = animeSoup.find(id="movie_id")['value']
-        animeAlias = animeSoup.find(id="alias_anime")['value']
-        animeLastEp = animeSoup.find(id="episode_page").find_all('a')[-1]['ep_end']
-        #----private data members------
-        self.__title = animeSoup.title.text.replace("at Gogoanime", '').strip()
-        self.__mainpageURL = url
-        self.__ajaxURL = "https://ajax.gogocdn.net/ajax/load-list-episode?ep_start=0&ep_end=" + animeLastEp + "&id=" + animeID + "&default_ep=0&alias=" + animeAlias
-        self.__ajaxSoup = BeautifulSoup(requests.get(self.__ajaxURL).text, 'html.parser')
-        self.__eptotal = len(self.__ajaxSoup.find_all('a'))
+        animeSoup = BeautifulSoup(requests.get(url, headers=my_headers).text, 'html.parser')
+        animeID = animeSoup.find(id='movie_id')['value']
+        animeAlias = animeSoup.find(id='alias_anime')['value']
+        animeLastEp = animeSoup.find(id='episode_page').find_all('a')[-1]['ep_end']
         #------------------------------
+        ajax_url = f'https://ajax.gogocdn.net/ajax/load-list-episode?ep_start=0&ep_end={animeLastEp}&id={animeID}&default_ep=0&alias={animeAlias}'
+        self.dataDict = {}
+        self.dataDict['anime-title'] = animeSoup.title.text.replace('at Gogoanime', '').strip()
+        self.dataDict['anime-url'] = url
+        ajaxSoup = BeautifulSoup(requests.get(ajax_url, headers=my_headers).text, 'html.parser')
+        self.episode_count = len(ajaxSoup.find_all('a'))
+        #------------------------------
+        self.dataDict['episodes'] = []
+        for li in ajaxSoup.find_all('li'):
+        	episodeDict = {}
+        	episodeDict['episode-title'] = self.dataDict['anime-title'] + ' - ' + ' '.join(li.text.split())
+        	episodeDict['episode-url'] = 'https://www.gogoanime.io{}'.format(li.find('a')['href'].strip())
+        	self.dataDict['episodes'].append(episodeDict)
 
-    def getTitle(self):
-        return self.__title
+    def scrapeEpisodes(self, start=1, end=1):
+    	self.dataDict['scraped-episodes'] = []
+    	for episodeDict in self.dataDict['episodes'][start-1:end]:
+    		scraped_episodeDict = episodeDict
+    		soup = BeautifulSoup(requests.get(episodeDict['episode-url'], headers=my_headers).text, 'html.parser')
+    		serversList = soup.find('div', {'class':'anime_muti_link'}).find_all('li')[1:]
+    		scraped_episodeDict['embed-servers'] = {}
+    		for li in serversList:
+    			embedUrl = li.find('a')['data-video']
+    			if not 'https:' in embedUrl:
+    				embedUrl = f'https:{embedUrl}'
+    			scraped_episodeDict['embed-servers'][li['class'][0]] = embedUrl
+    		#------
+    		self.dataDict['scraped-episodes'].append(scraped_episodeDict)
 
-    def getEpisodeList(self):
-        return reversed(self.__episodeList)
-
-    def getTotalEpisodeCount(self):
-        return self.__eptotal
-
-    def collectAllEpisodes(self):
-        self.__episodeList = []
-        for li in self.__ajaxSoup.find_all('li'):
-            self.__episodeList.insert(0, Episode(self.__title + " - " + " ".join(li.text.split()), "https://www.gogoanime.io" + li.find('a')['href'].strip()))
-
-    def collectEpisodes(self, start, end):
-        self.__episodeList = []
-        for li in self.__ajaxSoup.find_all('li')[-start:-(end+1):-1]:
-            self.__episodeList.insert(0, Episode(self.__title + " - " + " ".join(li.text.split()), "https://www.gogoanime.io" + li.find('a')['href'].strip()))
-
-    def displayEpisodes(self):
-        for ep in reversed(self.__episodeList):
-            print(ep.getTitle())
-
-    def displayDownloadLinks(self):
-        for epis in reversed(self.__episodeList):
-            print(epis.fetchDownloadLink())
-
-    def finalizeAnime(self):
-        for epis in self.__episodeList:
-            isEpisFile = os.path.isfile("downloaded/" + epis.getTitle().replace(' ', '_') + ".mp4")
-            isAriaFile = os.path.isfile("downloaded/" + epis.getTitle().replace(' ', '_') + ".mp4.aria2")
-            if not isEpisFile or isAriaFile: return
-        os.rename("downloaded", self.__title)
+    def saveJSON(self, filename='anime.json'):
+    	open(filename, 'w', encoding='utf-8').write(json.dumps(self.dataDict, indent=4, sort_keys=True, ensure_ascii=False))
 
 
 ######
@@ -62,16 +56,9 @@ class Anime:
 # OR A SHORT ONE https://www19.gogoanime.io/category/makura-no-danshi
 
 def main():
-    print('\t\t=======')
-    print('\t\t Anime')
-    print('\t\t=======')
-    try:
-        anime = Anime(input('\t- Enter Anime URL: '))
-        anime.collectAllEpisodes()
-        anime.displayDownloadLinks()
-    except Exception as e:
-        print('\t- Something went wrong!')
-        print(' Error says:', e)
+	anime_scraper = AnimeScraper('https://www19.gogoanime.io/category/sin-nanatsu-no-taizai-dub')
+	anime_scraper.scrapeEpisodes(start=1, end=1)
+	anime_scraper.saveJSON()
 
 if __name__ == '__main__':
     main()
