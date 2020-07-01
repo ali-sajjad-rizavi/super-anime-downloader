@@ -3,7 +3,7 @@ import requests
 import re as RegExp
 
 
-def get_mp4upload_downloadLink(embed_url):
+def get_mp4upload_download_link(embed_url):
 	scripts = BeautifulSoup(requests.get(embed_url).text, 'html.parser').find_all('script', type="text/javascript")
 	evalText = [script.text for script in scripts if "|embed|" in script.text][0]
 	#evalText = scripts[len(scripts)-1].text
