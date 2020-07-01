@@ -35,19 +35,18 @@ Just copy the link of the Anime you want to download. For now, this script only 
 the Anime links from GoGoAnime (See: https://www.gogoanime.io) but more websites support
 will be added later.
 
-After link is copied:
-- Run downloader.py using python3.
-- Paste the Anime link in the terminal/command-prompt and press ENTER.
+After copying URL:
+- Paste the Anime URL in the terminal/command-prompt and press ENTER.
 - Provide the range of episodes you want to download.
 
-PAUSE AN ONGOING DOWNLOADE:
+***PAUSE AN ONGOING DOWNLOAD:***
 Press [Ctrl+C] to pause download. To exit, press [Ctrl+C] again.
 
-RESUME DOWNLOADS:
+***RESUME DOWNLOADS:***
 Run program again, already downloaded episodes will not be downloaded again.
 The episodes which are partially downloaded, will automatically resume from where they stopped.
 
-Note:- The anime will be downloaded in the current working directory (current folder).
+***Note:-*** The anime will be downloaded in the current working directory (current folder).
 
 # Important note!
 
