@@ -1,4 +1,4 @@
-import os, subprocess, glob
+import os, glob
 
 from gogoanime import AnimeScraper as GogoanimeScraper
 import download_link_builder
@@ -18,16 +18,13 @@ class Downloader:
 		print("============================================================================")
 		options = f'-x 10 --max-tries=5 --retry-wait=10 --check-certificate=false -d downloaded -o "{filename}"'
 		cmd = f'aria2c {download_link} {options}'
-		print(cmd)
-		input()
 		#..........
 		if os.path.isfile(f'downloaded/{filename}') and not os.path.isfile(f'downloaded/{episode_filename}.aria2'):
 			return
-		#-------------
+		#-------------#if os.name == 'posix': subprocess.call(cmd.split())
 		while True:
 			try:
-				if os.name == 'posix': subprocess.call(cmd.split())
-				if not os.name == 'posix': os.system(cmd)
+				os.system(cmd)
 				break
 			except KeyboardInterrupt: input("\nDownloader is paused. PRESS [ENTER] TO CONTINUE...")
 		#-------------
@@ -55,8 +52,7 @@ class Downloader:
 		for command in commands:
 			while True:
 				try:
-					if os.name == 'posix': subprocess.call(command.split())
-					if not os.name == 'posix': os.system(command)
+					os.system(command)
 					break
 				except KeyboardInterrupt: input('\nDownloader is paused. PRESS [ENTER] TO CONTINUE...')
 
@@ -67,7 +63,7 @@ class Downloader:
 
 
 ###----------------###
-#### MAIN ROUTINE ####
+#### MAIN ROUTINE #### Example: https://www19.gogoanime.io/category/makura-no-danshi
 ###----------------###
 
 def main():
@@ -85,7 +81,6 @@ def main():
     print("=======================================================")
     print("-------------------- COMPLETED !!! --------------------")
     print("=======================================================")
-    downloader.retryFailedDownloads()
     #
     print("Done!")
 
