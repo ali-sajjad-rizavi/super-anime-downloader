@@ -23,7 +23,7 @@ class AnimeScraper:
         self.episode_count = len(ajaxSoup.find_all('a'))
         #------------------------------
         self.dataDict['episodes'] = []
-        for li in ajaxSoup.find_all('li'):
+        for li in reversed(ajaxSoup.find_all('li')):
         	episodeDict = {}
         	episodeDict['episode-title'] = self.dataDict['anime-title'] + ' - ' + ' '.join(li.text.split())
         	episodeDict['episode-url'] = 'https://www.gogoanime.io{}'.format(li.find('a')['href'].strip())
