@@ -30,7 +30,7 @@ def main():
 	print('\t\t Mp4Upload Generator')
 	print('\t\t=====================')
 	try:
-		download_link = get_mp4upload_downloadLink(input('\t- Enter Mp4Upload Embed URL: '))
+		download_link = get_mp4upload_download_link(input('\t- Enter Mp4Upload Embed URL: '))
 		print('- The generated download link: ', download_link)
 	except Exception as e:
 		print('\tSomething went wrong while generating the Download link!')
