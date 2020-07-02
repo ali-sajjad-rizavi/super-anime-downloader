@@ -47,6 +47,7 @@ class AnimeScraper:
     			scraped_episodeDict['embed-servers'][li['class'][0]] = embedUrl
     		#------
     		self.dataDict['scraped-episodes'].append(scraped_episodeDict)
+    		print('- Collected:', scraped_episodeDict['episode-title'])
 
     def saveJSON(self, filename='anime.json'):
     	open(filename, 'w', encoding='utf-8').write(json.dumps(self.dataDict, indent=4, sort_keys=True, ensure_ascii=False))
