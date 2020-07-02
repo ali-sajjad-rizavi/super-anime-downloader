@@ -19,7 +19,7 @@ class AnimeScraper:
         ajax_url = f'https://ajax.gogocdn.net/ajax/load-list-episode?ep_start=0&ep_end={animeLastEp}&id={animeID}&default_ep=0&alias={animeAlias}'
         self.dataDict = {}
         #re.sub('[<>?":/|]', '', x)
-        self.dataDict['anime-title'] = RegExp.sub('[<>?":/|]', '', animeSoup.title.text[6:].replace('at Gogoanime', '').strip())
+        self.dataDict['anime-title'] = RegExp.sub('[<>?":/|]', '', animeSoup.title.text.replace('at Gogoanime', '').replace('Watch ', '').strip())
         self.dataDict['anime-url'] = url
         ajaxSoup = BeautifulSoup(requests.get(ajax_url, headers=my_headers).text, 'html.parser')
         self.episode_count = len(ajaxSoup.find_all('a'))
