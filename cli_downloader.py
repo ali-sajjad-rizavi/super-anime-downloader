@@ -38,9 +38,6 @@ class Downloader:
 				continue
 			self.__downloadEpisode(filename=episodeDict['episode-title']+'.mp4', download_link=download_link)
 		self.__retryFailedDownloads()
-		if len(glob.glob('downloaded/*.aria2')) != 0:
-			return
-		os.rename('downloaded', self.anime_dict['anime-title'])
 
 	def __retryFailedDownloads(self):
 		if not os.path.isfile('failed.txt'):
@@ -57,6 +54,10 @@ class Downloader:
 				except KeyboardInterrupt: input('\nDownloader is paused. PRESS [ENTER] TO CONTINUE...')
 
 	def __del__(self):
+		if len(glob.glob('downloaded/*.aria2')) != 0:
+			return
+		os.rename('downloaded', self.anime_dict['anime-title'])
+		#---
 		if os.path.isfile('failed.txt'):
 			os.remove('failed.txt')
 
