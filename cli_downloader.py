@@ -73,7 +73,12 @@ def main():
     #
     anime_scraper = GogoanimeScraper(input(" - Enter Anime main-page URL: "))
     print("\t -FOUND:", anime_scraper.episode_count, " Episodes in TOTAL!\n")
-    anime_scraper.scrapeEpisodes(int(input("\t - Start From Episode: ")), int(input("\t - End At Episode: ")))
+    #-----
+    start_ep = int(input("\t - Start From Episode: "))
+    end_ep = int(input("\t - End At Episode: "))
+    print('----------------------------------------------------------------------------------')
+    print(f'- Scraping episode video links from {start_ep} to {end_ep}, wait for a while...')
+    anime_scraper.scrapeEpisodes(start=start_ep, end=end_ep)
     #
     print("\nStarting Download using aria2...\n")
     downloader = Downloader(anime_scraper.dataDict)
