@@ -1,5 +1,6 @@
 import requests, json, os
 from bs4 import BeautifulSoup
+import re as RegExp
 
 
 my_headers = {}
@@ -17,7 +18,8 @@ class AnimeScraper:
         #------------------------------
         ajax_url = f'https://ajax.gogocdn.net/ajax/load-list-episode?ep_start=0&ep_end={animeLastEp}&id={animeID}&default_ep=0&alias={animeAlias}'
         self.dataDict = {}
-        self.dataDict['anime-title'] = animeSoup.title.text.replace('at Gogoanime', '').strip()
+        #re.sub('[<>?":/|]', '', x)
+        self.dataDict['anime-title'] = RegExp.sub('[<>?":/|]', '', animeSoup.title.text[6:].replace('at Gogoanime', '').strip())
         self.dataDict['anime-url'] = url
         ajaxSoup = BeautifulSoup(requests.get(ajax_url, headers=my_headers).text, 'html.parser')
         self.episode_count = len(ajaxSoup.find_all('a'))
@@ -25,7 +27,9 @@ class AnimeScraper:
         self.dataDict['episodes'] = []
         for li in reversed(ajaxSoup.find_all('li')):
         	episodeDict = {}
-        	episodeDict['episode-title'] = self.dataDict['anime-title'] + ' - ' + ' '.join(li.text.split())
+        	#re.sub('[<>?":/|]', '', x)
+        	#episodeDict['episode-title'] = self.dataDict['anime-title'] + ' - ' + ' '.join(li.text.split())
+        	episodeDict['episode-title'] = RegExp.sub('[<>?":/|]', '', '{} - {}'.format(self.dataDict['anime-title'], ' '.join(li.text.split())))
         	episodeDict['episode-url'] = 'https://www.gogoanime.io{}'.format(li.find('a')['href'].strip())
         	self.dataDict['episodes'].append(episodeDict)
 
@@ -56,9 +60,10 @@ class AnimeScraper:
 # OR A SHORT ONE https://www19.gogoanime.io/category/makura-no-danshi
 
 def main():
-	anime_scraper = AnimeScraper('https://www19.gogoanime.io/category/sin-nanatsu-no-taizai-dub')
+	anime_scraper = AnimeScraper(input('Enter Anime URL: '))
 	anime_scraper.scrapeEpisodes(start=1, end=1)
 	anime_scraper.saveJSON()
+	print('- Saved JSON file!')
 
 if __name__ == '__main__':
     main()
