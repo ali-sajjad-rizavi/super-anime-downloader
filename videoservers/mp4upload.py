@@ -3,8 +3,13 @@ import requests
 import re as RegExp
 
 
+my_headers = {}
+my_headers['user-agent'] = 'Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36'
+
+
+
 def get_mp4upload_download_link(embed_url):
-	scripts = BeautifulSoup(requests.get(embed_url).text, 'html.parser').find_all('script', type="text/javascript")
+	scripts = BeautifulSoup(requests.get(embed_url, headers=my_headers).text, 'html.parser').find_all('script', type="text/javascript")
 	evalText = [script.text for script in scripts if "|embed|" in script.text][0]
 	#evalText = scripts[len(scripts)-1].text
 	evalItems = evalText.split('|')
