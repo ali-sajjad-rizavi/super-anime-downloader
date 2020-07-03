@@ -10,7 +10,7 @@ my_headers['user-agent'] = 'Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit
 
 def get_mp4upload_download_link(embed_url):
 	scripts = BeautifulSoup(requests.get(embed_url, headers=my_headers).text, 'html.parser').find_all('script', type="text/javascript")
-	evalText = [script.text for script in scripts if "|embed|" in script.text][0]
+	evalText = [str(script) for script in scripts if "|embed|" in str(script)][0]
 	#evalText = scripts[len(scripts)-1].text
 	evalItems = evalText.split('|')
 	del evalItems[:evalItems.index('mp4upload')+1]
