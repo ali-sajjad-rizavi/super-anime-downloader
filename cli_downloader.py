@@ -72,7 +72,16 @@ def main():
     print("\t\t| CLI ANIME DOWNLOADER |")
     print("\t\t|======================|\n")
     #
-    anime_scraper = GogoanimeScraper(input(" - Enter Anime main-page URL: "))
+    searchInput = input(" - Enter Anime name/URL: ")
+    if 'gogoanime' in searchInput:
+    	anime_scraper = GogoanimeScraper(searchInput)
+    else:
+    	print('\n\tResults:\n')
+    	anime_search_results = GogoanimeScraper.searchAnime(query=searchInput)
+    	[print(f'\t {i+1}) {anime_search_results[i][0]}') for i in range(len(anime_search_results))]
+    	selected_index = int(input('\n- Select your option: ')) - 1
+    	anime_scraper = GogoanimeScraper(anime_search_results[selected_index][1])
+    #
     print("\t -FOUND:", anime_scraper.episode_count, " Episodes in TOTAL!\n")
     #-----
     start_ep = int(input("\t - Start From Episode: "))
