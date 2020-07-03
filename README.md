@@ -1,6 +1,12 @@
 # super-anime-downloader
 This repository consists of a python console application (GUI will be added soon) which takes a Anime URL as input and downloads the range of episodes you specify.
 
+# Supported Operating Systems:
+- Windows XP/7/8/8.1/10
+- Linux (Debian, Fedora, Arch etc.)
+- MacOS
+- Android (Using Termux: https://play.google.com/store/apps/details?id=com.termux )
+
 # Dependencies
 - Python: Download and install python3 ( https://www.python.org/downloads/ ).
 - Aria2C: This program uses aria2 command-line (CLI) downloader ( https://aria2.github.io/ ).
