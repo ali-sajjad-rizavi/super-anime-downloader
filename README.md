@@ -62,6 +62,7 @@ pkg update
 termux-setup-storage
 pkg install python
 pkg install git
+pkg install aria2
 pip install requests
 pip install bs4
 ```
