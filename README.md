@@ -54,6 +54,30 @@ The episodes which are partially downloaded, will automatically resume from wher
 
 ***Note:-*** The anime will be downloaded in the current working directory (current folder).
 
+# Instructions for Android users:
+- Install Termux ( https://play.google.com/store/apps/details?id=com.termux ).
+- Open Termux and run the following commands:
+```
+pkg update
+termux-setup-storage
+pkg install python
+pkg install git
+pip install requests
+pip install bs4
+```
+- Now move to the desired folder where you want to download the 'super-anime-downloader' repository, using 'cd' (change directory) command.
+To download inside internal storage:
+```
+cd /sdcard
+ls
+git clone https://www.github.com/ali-sajjad-rizavi/super-anime-downloader
+cd super-anime-downloader
+```
+- Now run the downloader using:
+```
+python cli_downloader.py
+```
+
 # Important note!
 
 I am not responsible for the content you download using this script.
