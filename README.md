@@ -1,6 +1,8 @@
 # super-anime-downloader
 A console application written in Python3.x (GUI will be added soon) which takes a Anime Name/URL as input and downloads the range of episodes you specify.
 
+![](sample-run.gif)
+
 # Supported Platforms:
 - Windows 7/8/8.1/10
 - Linux (Debian, Fedora, Arch etc.)
