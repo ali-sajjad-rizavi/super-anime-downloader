@@ -19,7 +19,7 @@ class Downloader:
 		options = f'-x 10 --max-tries=5 --retry-wait=10 --check-certificate=false -d downloaded -o "{filename}"'
 		cmd = f'aria2c {download_link} {options}'
 		#..........
-		if os.path.isfile(f'downloaded/{filename}') and not os.path.isfile(f'downloaded/{episode_filename}.aria2'):
+		if os.path.isfile(f'downloaded/{filename}') and not os.path.isfile(f'downloaded/{filename}.aria2'):
 			return
 		#-------------#if os.name == 'posix': subprocess.call(cmd.split())
 		while True:
