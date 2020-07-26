@@ -36,7 +36,11 @@ class Downloader:
 			download_link = download_link_builder.get_available_download_link(episodeDict)
 			if download_link == 'unavailable':
 				continue
-			self.__downloadEpisode(filename=episodeDict['episode-title']+'.mp4', download_link=download_link)
+			#---
+			extension = '.mp4'
+			if '.m3u8' in download_link:
+				extension = '.m3u8'
+			self.__downloadEpisode(filename=episodeDict['episode-title']+extension, download_link=download_link)
 		self.__retryFailedDownloads()
 
 	def __retryFailedDownloads(self):
