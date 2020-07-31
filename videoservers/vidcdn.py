@@ -11,10 +11,7 @@ my_headers['user-agent'] = 'Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit
 def get_vidcdn_download_link(embed_url):
 	soup = BeautifulSoup(requests.get(embed_url, headers=my_headers).text, 'html.parser')
 	js_text = str(soup.find('div', class_='videocontent'))
-	try:
-		download_link = RegExp.findall('file: \'(.+\.mp4)\'', js_text)[0]
-	except:
-		download_link = RegExp.findall('file: \'(.+\.m3u8)\'', js_text)[0]
+	download_link = RegExp.findall('file: \'(.+?)\'', js_text)[0]
 	return download_link
 
 
