@@ -19,7 +19,7 @@ def get_mp4upload_download_link(embed_url):
 	evalItems = evalText.split('|')
 	w3strPossiblesList = [s for s in evalItems if RegExp.match('s\d+$', s) or RegExp.match('www\d+$', s)]
 	w3str = "www"
-	if len(w3strPossiblesList) is not 0:
+	if len(w3strPossiblesList) != 0:
 		w3str = max(w3strPossiblesList, key=len)
 	#
 	return 'https://{}.mp4upload.com:{}/d/{}/video.mp4'.format(w3str, evalItems[evalItems.index(videoID)+1], videoID)
