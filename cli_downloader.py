@@ -102,6 +102,7 @@ def main():
     print("=======================================================")
     #
     print("Done!")
+    input('- Press [ENTER] to quit...')
 
 if __name__ == '__main__':
 	main()
