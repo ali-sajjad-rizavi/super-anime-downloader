@@ -8,7 +8,6 @@ my_headers['user-agent'] = 'Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit
 
 
 
-
 class AnimeScraper:
     def __init__(self, url):
         animeSoup = BeautifulSoup(requests.get(url, headers=my_headers).text, 'html.parser')
@@ -30,7 +29,7 @@ class AnimeScraper:
         	#re.sub('[<>?":/|]', '', x)
         	#episodeDict['episode-title'] = self.dataDict['anime-title'] + ' - ' + ' '.join(li.text.split())
         	episodeDict['episode-title'] = RegExp.sub('[<>?":/|]', '', '{} - {}'.format(self.dataDict['anime-title'], ' '.join(li.text.split())))
-        	episodeDict['episode-url'] = 'https://www.gogoanime.io{}'.format(li.find('a')['href'].strip())
+        	episodeDict['episode-url'] = 'https://www.gogoanime.so{}'.format(li.find('a')['href'].strip())
         	self.dataDict['episodes'].append(episodeDict)
 
     def scrapeEpisodes(self, start=1, end=1):
@@ -54,18 +53,15 @@ class AnimeScraper:
 
     # STATIC METHOD
     def searchAnime(query='anime name'):
-        response_text = requests.get('https://www.gogoanime.io/search.html?keyword={}'.format(query.replace(' ', '%20'))).text
+        response_text = requests.get('https://www.gogoanime.so/search.html?keyword={}'.format(query.replace(' ', '%20'))).text
         p_results = BeautifulSoup(response_text, 'html.parser').find('ul', class_='items').find_all('p', class_='name')[:4]
-        paired_results = [(p.find('a')['title'], 'https://www.gogoanime.io{}'.format(p.find('a')['href'])) for p in p_results]
+        paired_results = [(p.find('a')['title'], 'https://www.gogoanime.so{}'.format(p.find('a')['href'])) for p in p_results]
         return paired_results # (title, url) pair list is returned
 
 
 ######
 ######
 ######
-
-# A sample anime URL: https://www19.gogoanime.io/category/sin-nanatsu-no-taizai-dub
-# OR A SHORT ONE https://www19.gogoanime.io/category/makura-no-danshi
 
 def main():
 	anime_scraper = AnimeScraper(input('Enter Anime URL: '))
