@@ -9,20 +9,26 @@ my_headers['user-agent'] = 'Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit
 
 
 def get_mp4upload_download_link(embed_url):
-	scripts = BeautifulSoup(requests.get(embed_url, headers=my_headers).text, 'html.parser').find_all('script', type="text/javascript")
-	evalText = [str(script) for script in scripts if "|embed|" in str(script)][0]
-	#evalText = scripts[len(scripts)-1].text
-	evalItems = evalText.split('|')
-	del evalItems[:evalItems.index('mp4upload')+1]
-	videoID = [a for a in evalItems if len(a)>30][0]
-	#
-	evalItems = evalText.split('|')
-	w3strPossiblesList = [s for s in evalItems if RegExp.match('s\d+$', s) or RegExp.match('www\d+$', s)]
-	w3str = "www"
-	if len(w3strPossiblesList) != 0:
-		w3str = max(w3strPossiblesList, key=len)
-	#
-	return 'https://{}.mp4upload.com:{}/d/{}/video.mp4'.format(w3str, evalItems[evalItems.index(videoID)+1], videoID)
+	try:
+		response = requests.get(embed_url, headers=my_headers)
+		scripts = BeautifulSoup(response.text, 'html.parser').find_all('script', type="text/javascript")
+		evalText = [str(script) for script in scripts if "|embed|" in str(script)][0]
+		#evalText = scripts[len(scripts)-1].text
+		evalItems = evalText.split('|')
+		del evalItems[:evalItems.index('mp4upload')+1]
+		videoID = [a for a in evalItems if len(a)>30][0]
+		#
+		evalItems = evalText.split('|')
+		w3strPossiblesList = [s for s in evalItems if RegExp.match('s\d+$', s) or RegExp.match('www\d+$', s)]
+		w3str = "www"
+		if len(w3strPossiblesList) != 0:
+			w3str = max(w3strPossiblesList, key=len)
+		#
+		download_link = 'https://{}.mp4upload.com:{}/d/{}/video.mp4'.format(w3str, evalItems[evalItems.index(videoID)+1], videoID)
+		return download_link
+	except Exception as e:
+		print(e)
+		return None
 
 ######
 ######
