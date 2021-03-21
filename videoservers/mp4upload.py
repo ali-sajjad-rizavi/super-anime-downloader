@@ -8,7 +8,7 @@ my_headers['user-agent'] = 'Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit
 
 
 
-def get_mp4upload_download_link(embed_url):
+def get_download_link(embed_url):
 	try:
 		response = requests.get(embed_url, headers=my_headers)
 		scripts = BeautifulSoup(response.text, 'html.parser').find_all('script', type="text/javascript")
