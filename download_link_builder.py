@@ -13,12 +13,18 @@ def get_available_download_link(episode_dict):
 
 	''' Streamtape '''
 	if 'streamtape' in episode_dict['embed-servers'].keys():
-		download_link = streamtape.get_download_link()
+		download_link = streamtape.get_download_link(episode_dict['embed-servers']['streamtape'])
 		if download_link is not None:
 			return download_link
 
 	''' Mp4Upload '''
 	if 'mp4upload' in episode_dict['embed-servers'].keys():
+		download_link = mp4upload.get_download_link(episode_dict['embed-servers']['mp4upload'])
+		if download_link is not None:
+			return download_link
+
+	''' Mp4Upload '''
+	if 'mp4' in episode_dict['embed-servers'].keys():
 		download_link = mp4upload.get_download_link(episode_dict['embed-servers']['mp4'])
 		if download_link is not None:
 			return download_link
