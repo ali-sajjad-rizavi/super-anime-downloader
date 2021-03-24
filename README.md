@@ -17,11 +17,8 @@ A console application written in Python3.x (GUI will be added soon) which takes 
 ```
 pkg update
 termux-setup-storage
-pkg install python
-pkg install git
-pkg install aria2
-pip install requests
-pip install bs4
+pkg install python git aria2
+pip install requests bs4
 cd /sdcard
 ls
 git clone https://www.github.com/ali-sajjad-rizavi/super-anime-downloader
@@ -35,7 +32,7 @@ Enter anime name or URL and set the episode range. Anime folder containing downl
 will be present inside "Internal Storage -> super-anime-downloader ->".
 
 # Instructions for Windows:
-- Install Python3.x ( https://www.python.org/downloads/ , Also check mark 'Add python to PATH').
+- Install Python3.x ( https://www.python.org/downloads/ , Also check mark `Add python to PATH`).
 - Install packages needed:
 ```
 python -m pip install requests bs4
