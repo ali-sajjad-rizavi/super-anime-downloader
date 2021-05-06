@@ -1,2 +1,4 @@
-__pycache__
-videoservers/__pycache__
+__pycache__/
+videoservers/__pycache__/
+.idea/
+venv/
