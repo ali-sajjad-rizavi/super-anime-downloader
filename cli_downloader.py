@@ -105,35 +105,44 @@ def main():
     print("\t\t|======================|")
     print("\t\t| CLI ANIME DOWNLOADER |")
     print("\t\t|======================|\n")
-    #
-    searchInput = input(" - Enter Anime name/URL: ")
-    if "gogoanime" in searchInput:
-        anime_scraper = GogoanimeScraper(searchInput)
+
+    search_input = input(" - Enter Anime name/URL: ")
+
+    # Create anime scraper object using search by name, or the anime URL
+    if "gogoanime" in search_input:
+        anime_scraper = GogoanimeScraper(search_input)
     else:
+        anime_search_results = GogoanimeScraper.search_anime(search_input)
+
+        # Display search results
         print("\n\tResults:\n")
-        anime_search_results = GogoanimeScraper.search_anime(query=searchInput)
-        [
+        for i in range(len(anime_search_results)):
             print(f"\t {i + 1}) {anime_search_results[i][0]}")
-            for i in range(len(anime_search_results))
-        ]
+
         selected_index = int(input("\n- Select your option: ")) - 1
+
+        # Create anime scraper object based on the selected choice
         anime_scraper = GogoanimeScraper(anime_search_results[selected_index][1])
-    #
+
     print("\t -FOUND:", anime_scraper.episode_count, " Episodes in TOTAL!\n")
-    # -----
+
     start_ep = int(input("\t - Start From Episode: "))
     end_ep = int(input("\t - End At Episode: "))
+
     print("----------------------------------------------------------------------------------")
     print(f"- Scraping episode video links from {start_ep} to {end_ep}, wait for a while...")
+
     anime_scraper.scrape_episodes(start=start_ep, end=end_ep)
-    #
+
     print("\nStarting Download using aria2...\n")
+
     downloader = Downloader(anime_scraper.dataDict)
     downloader.download_anime()
+
     print("=======================================================")
     print("-------------------- COMPLETED !!! --------------------")
     print("=======================================================")
-    #
+
     print("Done!")
     input("- Press [ENTER] to quit...")
 
