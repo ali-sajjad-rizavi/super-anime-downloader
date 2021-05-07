@@ -1,10 +1,6 @@
+import settings
 from bs4 import BeautifulSoup
 import requests
-
-my_headers = {
-    "user-agent": "Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
-    "Chrome/83.0.4103.116 Safari/537.36"
-}
 
 
 def get_download_link(ep: dict) -> str:
@@ -19,7 +15,7 @@ def get_download_link(ep: dict) -> str:
         return None
 
     try:
-        response = requests.get(embed_url, headers=my_headers)
+        response = requests.get(embed_url, headers=settings.REQUEST_HEADERS)
         soup = BeautifulSoup(response.text, "html.parser")
 
         text = [str(script) for script in soup.find_all("script") if ").innerHTML" in str(script)][

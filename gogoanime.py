@@ -1,13 +1,9 @@
+import settings
 from typing import List
-
-import requests, json
-from bs4 import BeautifulSoup
 import re
-
-my_headers = {
-    "user-agent": "Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
-    "Chrome/83.0.4103.116 Safari/537.36 "
-}
+import json
+import requests
+from bs4 import BeautifulSoup
 
 
 class AnimeScraper:
@@ -20,7 +16,10 @@ class AnimeScraper:
         :param url: Anime URL
         """
         # Soup object for scraping
-        anime_soup = BeautifulSoup(requests.get(url, headers=my_headers).text, "html.parser")
+        anime_soup = BeautifulSoup(
+            requests.get(url, headers=settings.REQUEST_HEADERS).text,
+            "html.parser",
+        )
 
         # GET request parameters for ajax URL
         id_ = anime_soup.find(id="movie_id")["value"]
@@ -28,8 +27,10 @@ class AnimeScraper:
         last_ep = anime_soup.find(id="episode_page").find_all("a")[-1]["ep_end"]
 
         # We collect the list of all episodes and their links using this URL
-        ajax_url = "https://ajax.gogocdn.net/ajax/load-list-episode?ep_start=0&default_ep=0" \
-                   f"&ep_end={last_ep}&id={id_}&alias={alias}"
+        ajax_url = (
+            "https://ajax.gogocdn.net/ajax/load-list-episode?ep_start=0&default_ep=0"
+            f"&ep_end={last_ep}&id={id_}&alias={alias}"
+        )
 
         # This dictionary will later contain episodes information as well
         self.dataDict = {
@@ -41,7 +42,10 @@ class AnimeScraper:
             "anime-url": url,
         }
 
-        ajax_soup = BeautifulSoup(requests.get(ajax_url, headers=my_headers).text, "html.parser")
+        ajax_soup = BeautifulSoup(
+            requests.get(ajax_url, headers=settings.REQUEST_HEADERS).text,
+            "html.parser",
+        )
         self.episode_count = len(ajax_soup.find_all("a"))
 
         # Collect information of all episodes for further scraping later
@@ -66,10 +70,13 @@ class AnimeScraper:
         :param end: Episode number to end at
         """
         self.dataDict["scraped-episodes"] = []
-        for episode_dict in self.dataDict["episodes"][start - 1:end]:
+        for episode_dict in self.dataDict["episodes"][start - 1 : end]:
             scraped_episode_dict = episode_dict
             soup = BeautifulSoup(
-                requests.get(episode_dict["episode-url"], headers=my_headers).text, "html.parser"
+                requests.get(
+                    episode_dict["episode-url"], headers=settings.REQUEST_HEADERS
+                ).text,
+                "html.parser",
             )
             servers_list = soup.find("div", {"class": "anime_muti_link"}).find_all("li")[1:]
             scraped_episode_dict["embed-servers"] = {}
@@ -114,7 +121,10 @@ class AnimeScraper:
         )
 
         paired_results = [
-            (p.find("a")["title"], "https://www.gogoanime.so{}".format(p.find("a")["href"]))
+            (
+                p.find("a")["title"],
+                "https://www.gogoanime.so{}".format(p.find("a")["href"]),
+            )
             for p in p_results
         ]
 
@@ -124,5 +134,5 @@ class AnimeScraper:
 if __name__ == "__main__":
     anime_scraper = AnimeScraper(input("Enter Anime URL: "))
     anime_scraper.scrape_episodes(start=1, end=1)
-    anime_scraper.save_json(filename='anime.json')
+    anime_scraper.save_json(filename="anime.json")
     print("- Saved JSON file!")

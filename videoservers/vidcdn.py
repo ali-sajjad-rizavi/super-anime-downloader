@@ -1,11 +1,7 @@
+import settings
 import requests
 from bs4 import BeautifulSoup
 import re
-
-my_headers = {
-    "user-agent": "Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
-    "Chrome/83.0.4103.116 Safari/537.36"
-}
 
 
 def get_download_link(ep: dict) -> str:
@@ -20,7 +16,9 @@ def get_download_link(ep: dict) -> str:
         return None
 
     try:
-        soup = BeautifulSoup(requests.get(embed_url, headers=my_headers).text, "html.parser")
+        soup = BeautifulSoup(
+            requests.get(embed_url, headers=settings.REQUEST_HEADERS).text, "html.parser"
+        )
         js_text = str(soup.find("div", class_="videocontent"))
         download_link = re.findall("file: '(.+?)'", js_text)[0]
     except Exception as e:
