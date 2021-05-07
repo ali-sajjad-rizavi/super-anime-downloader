@@ -1,4 +1,6 @@
 # super-anime-downloader
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+
 A console application written in Python3.x (GUI will be added soon) which takes a Anime Name/URL as input and downloads the range of episodes you specify.
 - Video tutorial for PC: https://youtu.be/TV2X5ysJius
 - Video tutorial for Android: https://youtu.be/-kSxlGcbmpw
