@@ -19,7 +19,7 @@ class Downloader:
             download_link = download_link_builder.get_available_download_link(episodeDict)
 
             # Skip if episode download URL is not available
-            if download_link == "unavailable":
+            if not download_link:
                 continue
 
             # TODO: Implement a technique to download .m3u8 files.

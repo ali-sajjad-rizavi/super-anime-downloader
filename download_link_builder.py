@@ -1,49 +1,32 @@
-from videoservers import mp4upload
-from videoservers import vidcdn
-from videoservers import mixdrop
-from videoservers import streamtape
+import videoservers.mp4upload
+import videoservers.vidcdn
+import videoservers.mixdrop
+import videoservers.streamtape
 
 
-def get_available_download_link(episode_dict):
-	# Mixdrop
-	if 'mixdrop' in episode_dict['embed-servers'].keys():
-		download_link = mixdrop.get_download_link(episode_dict['embed-servers']['mixdrop'])
-		if download_link is not None:
-			return download_link
+def get_available_download_link(ep: dict) -> str:
+    """
+    Finds the best available download link using episode information provided
+    in given dictionary.
 
-	# Streamtape
-	if 'streamtape' in episode_dict['embed-servers'].keys():
-		download_link = streamtape.get_download_link(episode_dict['embed-servers']['streamtape'])
-		if download_link is not None:
-			return download_link
+    :param ep: Episode dictionary
+    :return: Best available video download URL
+    """
 
-	# Mp4Upload
-	if 'mp4upload' in episode_dict['embed-servers'].keys():
-		download_link = mp4upload.get_download_link(episode_dict['embed-servers']['mp4upload'])
-		if download_link is not None:
-			return download_link
+    # This list is ordered by the most preferred video server at top, and least
+    # preferred at the end. We can easily prioritize our preferred video server
+    # by rearranging the functions in this list.
+    download_link_functions = [
+        videoservers.mixdrop.get_download_link,
+        videoservers.streamtape.get_download_link,
+        videoservers.mp4upload.get_download_link,
+        videoservers.vidcdn.get_download_link,
+    ]
 
-	# Mp4Upload
-	if 'mp4' in episode_dict['embed-servers'].keys():
-		download_link = mp4upload.get_download_link(episode_dict['embed-servers']['mp4'])
-		if download_link is not None:
-			return download_link
+    # Get the best available download link!
+    for get_download_link_func in download_link_functions:
+        dl = get_download_link_func(ep)
+        if dl:
+            return dl
 
-	# VidCDN
-	if 'vidcdn' in episode_dict['embed-servers'].keys():
-		download_link = vidcdn.get_download_link(episode_dict['embed-servers']['vidcdn'])
-		if download_link is not None:
-			return download_link
-	
-	return 'unavailable'
-
-
-######
-######
-######
-
-def main():
-	print('This is an import script')
-
-if __name__ == '__main__':
-	main()
+    return None

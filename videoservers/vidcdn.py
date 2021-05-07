@@ -8,13 +8,17 @@ my_headers = {
 }
 
 
-def get_download_link(embed_url: str) -> str:
+def get_download_link(ep: dict) -> str:
     """
     Generates a download link for vidcdn embed video server
 
-    :param embed_url: Embed video link of vidcdn server
+    :param ep: Episode dictionary
     :return: Download link of video
     """
+    embed_url = ep["embed-servers"].get("vidcdn")
+    if not embed_url:
+        return None
+
     try:
         soup = BeautifulSoup(requests.get(embed_url, headers=my_headers).text, "html.parser")
         js_text = str(soup.find("div", class_="videocontent"))
@@ -28,4 +32,4 @@ def get_download_link(embed_url: str) -> str:
 
 # Example: https://vidstreaming.io/load.php?id=OTc2MzI=&title=Boruto%3A+Naruto+Next+Generations+Episode+1
 if __name__ == "__main__":
-    print("Download link:", input("Enter Vidcdn embed URL: "))
+    print(get_download_link({"embed-servers": {"vidcdn": input("Enter vidcdn embed URL: ")}}))

@@ -7,13 +7,17 @@ my_headers = {
 }
 
 
-def get_download_link(embed_url: str) -> str:
+def get_download_link(ep: dict) -> str:
     """
     Generates a download link for streamtape embed video server
 
-    :param embed_url: Embed video link of streamtape server
-    :return: Download link of video
+    :param ep: Episode dictionary
+    :return: Download link of video from streamtape
     """
+    embed_url = ep["embed-servers"].get("streamtape")
+    if not embed_url:
+        return None
+
     try:
         response = requests.get(embed_url, headers=my_headers)
         soup = BeautifulSoup(response.text, "html.parser")
@@ -34,8 +38,7 @@ def get_download_link(embed_url: str) -> str:
 
 
 if __name__ == "__main__":
+    # Example: https://streamtape.com/e/YqKyKxg23jivJDB/world-trigger-2nd-season-episode-10.mp4
     print(
-        get_download_link(
-            "https://streamtape.com/e/YqKyKxg23jivJDB/world-trigger-2nd-season-episode-10.mp4"
-        )
+        get_download_link({"embed-servers": {"streamtape": input("Enter streamtape embed URL: ")}})
     )

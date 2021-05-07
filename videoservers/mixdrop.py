@@ -7,13 +7,17 @@ my_headers = {
 }
 
 
-def get_download_link(embed_url: str) -> str:
+def get_download_link(ep: dict) -> str:
     """
     Generates a download link for mixdrop embed video server
 
-    :param embed_url: Embed video link of mixdrop server
-    :return: Download link of video
+    :param ep: Episode dictionary
+    :return: Download link of video from mixdrop
     """
+    embed_url = ep["embed-servers"].get("mixdrop")
+    if not embed_url:
+        return None
+
     try:
         response = requests.get(embed_url, headers=my_headers)
 
@@ -36,6 +40,5 @@ def get_download_link(embed_url: str) -> str:
 
 
 if __name__ == "__main__":
-    # print(get_download_link('https://mixdrop.co/e/7rgov1qpuk4rq7'))
-    mixdrop_embed_url = input("Enter mixdrop embed URL: ")
-    print(get_download_link(mixdrop_embed_url))
+    # Example: https://mixdrop.co/e/7rgov1qpuk4rq7
+    print(get_download_link({"embed-servers": {"mixdrop": input("Enter mixdrop embed URL: ")}}))
