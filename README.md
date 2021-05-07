@@ -7,6 +7,10 @@ A console application written in Python3.x (GUI will be added soon) which takes 
 
 ![](sample-run.gif)
 
+# How to contribute? - Pull Requests
+
+Contributors are welcome! Read [CONTRIBUTING.md](https://github.com/ali-sajjad-rizavi/super-anime-downloader/CONTRIBUTING.md) for instructions how to contribute to this project.
+
 # Supported Platforms:
 - Windows 7/8/8.1/10
 - Linux (Debian, Fedora, Arch etc.)
@@ -37,7 +41,7 @@ will be present inside "Internal Storage -> super-anime-downloader ->".
 - Install Python3.x ( https://www.python.org/downloads/ , Also check mark `Add python to PATH`).
 - Install packages needed:
 ```
-python -m pip install requests bs4
+python -m pip install -r requirements.txt
 ```
 - Download zip file from https://github.com/ali-sajjad-rizavi/super-anime-downloader and extract the repository folder.
 Go inside 'super-anime-downloader' folder and run 'cli_downloader.py' ('Open with Python').
@@ -58,7 +62,7 @@ Open terminal inyour desired folder and run:
 sudo apt-get install aria2
 sudo apt-get install git
 sudo apt-get install python3.8
-python3 -m pip install requests bs4
+python3 -m pip install -r requirements.txt
 git clone https://github.com/ali-sajjad-rizavi/super-anime-downloader
 cd super-anime-downloader
 python3 cli_downloader.py
