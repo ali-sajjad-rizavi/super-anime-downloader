@@ -12,7 +12,8 @@ This document will guide you through the contribution process.
 
 ### Step 1: Fork the project
 
-Fork the project on GitHun then clone it locally.
+- Fork the project on GitHub by clicking the *Fork* button at https://github.com/ali-sajjad-rizavi/super-anime-downloader
+- Then clone it locally using:
 ```
 git clone git@github.com:your_username/super-anime-downloader.git
 cd super-anime-downloader
