@@ -134,5 +134,5 @@ class AnimeScraper:
 if __name__ == "__main__":
     anime_scraper = AnimeScraper(input("Enter Anime URL: "))
     anime_scraper.scrape_episodes(start=1, end=1)
-    anime_scraper.save_json(filename="anime.json")
+    anime_scraper.save_json(filename="../anime.json")
     print("- Saved JSON file!")

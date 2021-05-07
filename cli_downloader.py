@@ -1,7 +1,7 @@
 import os, glob
 
-from gogoanime import AnimeScraper as GogoanimeScraper
-import download_link_builder
+from scrapers.gogoanime import AnimeScraper as GogoanimeScraper
+from scrapers import download_link_builder
 
 
 class Downloader:
