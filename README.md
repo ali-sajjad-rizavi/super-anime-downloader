@@ -9,7 +9,7 @@ A console application written in Python3.x (GUI will be added soon) which takes 
 
 # How to contribute? - Pull Requests
 
-Contributors are welcome! Read [CONTRIBUTING.md](https://github.com/ali-sajjad-rizavi/super-anime-downloader/CONTRIBUTING.md) for instructions how to contribute to this project.
+Contributors are welcome! Read [CONTRIBUTING.md](https://github.com/ali-sajjad-rizavi/super-anime-downloader/blob/master/CONTRIBUTING.md) for instructions how to contribute to this project.
 
 # Supported Platforms:
 - Windows 7/8/8.1/10
