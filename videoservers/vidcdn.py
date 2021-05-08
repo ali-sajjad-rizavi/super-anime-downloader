@@ -1,17 +1,18 @@
 import settings
+import models as mdl
 import requests
 from bs4 import BeautifulSoup
 import re
 
 
-def get_download_link(ep: dict) -> str:
+def get_download_link(ep: mdl.Episode) -> str:
     """
     Generates a download link for vidcdn embed video server
 
-    :param ep: Episode dictionary
+    :param ep: Episode model object
     :return: Download link of video
     """
-    embed_url = ep["embed-servers"].get("vidcdn")
+    embed_url = ep.video_data.get("vidcdn")
     if not embed_url:
         return None
 
@@ -30,4 +31,9 @@ def get_download_link(ep: dict) -> str:
 
 # Example: https://vidstreaming.io/load.php?id=OTc2MzI=&title=Boruto%3A+Naruto+Next+Generations+Episode+1
 if __name__ == "__main__":
-    print(get_download_link({"embed-servers": {"vidcdn": input("Enter vidcdn embed URL: ")}}))
+    epis = mdl.Episode(
+        title="Test title",
+        url="Test URL",
+        video_data={"embed-servers": {"vidcdn": input("Enter vidcdn embed URL: ")}}
+    )
+    print(get_download_link(epis))

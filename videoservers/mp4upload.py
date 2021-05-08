@@ -1,18 +1,19 @@
 import settings
+import models as mdl
 from bs4 import BeautifulSoup
 import requests
 import re
 
 
-def get_download_link(ep: dict) -> str:
+def get_download_link(ep: mdl.Episode) -> str:
     """
     Generates a download link for mp4upload embed video server
 
-    :param ep: Episode dictionary
+    :param ep: Episode model object
     :return: Download link of video from mp4upload
     """
     # The class name for mp4upload server is either "mp4upload" or "mp4"
-    embed_url = ep["embed-servers"].get("mp4upload", ep["embed-servers"].get("mp4"))
+    embed_url = ep.video_data.get("mp4upload", ep.video_data.get("mp4"))
     if not embed_url:
         return None
 
@@ -50,11 +51,10 @@ if __name__ == "__main__":
     print("\t\t=====================")
     print("\t\t Mp4Upload Generator")
     print("\t\t=====================")
-    try:
-        d = get_download_link(
-            {"embed-servers": {"mp4upload": input("\t- Enter Mp4Upload Embed URL: ")}}
-        )
-        print(f"- The generated download link: {d}")
-    except Exception as e:
-        print("\tSomething went wrong while generating the Download link!")
-        print("Error message: ", e)
+    epis = mdl.Episode(
+        title="Test title",
+        url="Test URL",
+        video_data={"embed-servers": {"mp4upload": input("\t- Enter Mp4Upload Embed URL: ")}}
+    )
+    d = get_download_link(epis)
+    print(f"- The generated download link: {d}")

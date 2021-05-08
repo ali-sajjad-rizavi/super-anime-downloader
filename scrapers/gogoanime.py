@@ -1,4 +1,5 @@
 import settings
+import models as mdl
 from typing import List
 import re
 import json
@@ -7,17 +8,17 @@ from bs4 import BeautifulSoup
 
 
 class AnimeScraper:
-    def __init__(self, url: str):
+    def __init__(self, anime_url: str):
         """
         Constructor for AnimeScraper.
         Scrapes some information about anime, which is used later for further
         scraping and downloading.
 
-        :param url: Anime URL
+        :param anime_url: Anime URL
         """
         # Soup object for scraping
         anime_soup = BeautifulSoup(
-            requests.get(url, headers=settings.REQUEST_HEADERS).text,
+            requests.get(anime_url, headers=settings.REQUEST_HEADERS).text,
             "html.parser",
         )
 
@@ -32,54 +33,50 @@ class AnimeScraper:
             f"&ep_end={last_ep}&id={id_}&alias={alias}"
         )
 
-        # This dictionary will later contain episodes information as well
-        self.dataDict = {
-            "anime-title": re.sub(
-                '[<>?":/|]',
-                "",
-                anime_soup.title.text.replace("at Gogoanime", "").replace("Watch ", "").strip(),
-            ),
-            "anime-url": url,
-        }
+        # Remove bad characters from anime title
+        t = anime_soup.title.text.replace("at Gogoanime", "").replace("Watch ", "").strip()
+        t = re.sub('[<>?":/|]', "", t)
+        # Model object for anime. Episodes will be scraped and added to it
+        self.anime = mdl.Anime(title=t, url=anime_url, episodes=[])
 
         ajax_soup = BeautifulSoup(
             requests.get(ajax_url, headers=settings.REQUEST_HEADERS).text,
             "html.parser",
         )
-        self.episode_count = len(ajax_soup.find_all("a"))
 
         # Collect information of all episodes for further scraping later
-        self.dataDict["episodes"] = []
         for li in reversed(ajax_soup.find_all("li")):
-            episode_dict = {
-                "episode-title": re.sub(
-                    '[<>?":/|]',
-                    "",
-                    "{} - {}".format(self.dataDict["anime-title"], " ".join(li.text.split())),
-                ),
-                "episode-url": "https://www.gogoanime.so{}".format(li.find("a")["href"].strip()),
-            }
-            self.dataDict["episodes"].append(episode_dict)
+            # Remove bad characters from scarped episode title
+            ep_title = re.sub('[<>?":/|]', "", " ".join(li.text.split()))
+
+            # Episode model object. Video data attribute will be set after scraping
+            # the specified range of episodes.
+            ep = mdl.Episode(
+                title=f"{self.anime.title} - {ep_title}",
+                url="https://www.gogoanime.so{}".format(li.find("a")["href"].strip())
+            )
+
+            # Append to list of episodes in anime model object
+            self.anime.episodes.append(ep)
 
     def scrape_episodes(self, start: int, end: int):
         """
-        Scrapes episode data including embed video server URLs and store in the anime
-        dictionary.
+        Scrapes episode data including embed video server URLs and store in
+        the episodes model objects present in anime model object.
 
         :param start: Episode number to start from
         :param end: Episode number to end at
         """
-        self.dataDict["scraped-episodes"] = []
-        for episode_dict in self.dataDict["episodes"][start - 1 : end]:
-            scraped_episode_dict = episode_dict
+        for ep in self.anime.episodes[start - 1: end]:
             soup = BeautifulSoup(
-                requests.get(
-                    episode_dict["episode-url"], headers=settings.REQUEST_HEADERS
-                ).text,
+                requests.get(ep.url, headers=settings.REQUEST_HEADERS).text,
                 "html.parser",
             )
             servers_list = soup.find("div", {"class": "anime_muti_link"}).find_all("li")[1:]
-            scraped_episode_dict["embed-servers"] = {}
+
+            # Data of embed servers will be collected in video_data attribute
+            ep.video_data = {}
+
             for li in servers_list:
                 embed_url = li.find("a")["data-video"]
 
@@ -87,20 +84,10 @@ class AnimeScraper:
                 if "https:" not in embed_url:
                     embed_url = f"https:{embed_url}"
 
-                scraped_episode_dict["embed-servers"][li["class"][0]] = embed_url
+                # Collect embed urls into the dictionary
+                ep.video_data[li["class"][0]] = embed_url
 
-            self.dataDict["scraped-episodes"].append(scraped_episode_dict)
-            print("- Collected:", scraped_episode_dict["episode-title"])
-
-    def save_json(self, filename: str):
-        """
-        Saves anime data in a JSON file, from the dictionary object.
-
-        :param filename: Name for the file to be saved
-        """
-        open(filename, "w", encoding="utf-8").write(
-            json.dumps(self.dataDict, indent=4, sort_keys=True, ensure_ascii=False)
-        )
+            print(f"- Collected: {ep.title}")
 
     @staticmethod
     def search_anime(q: str) -> List[tuple]:
@@ -115,9 +102,7 @@ class AnimeScraper:
         ).text
 
         p_results = (
-            BeautifulSoup(response_text, "html.parser")
-            .find("ul", class_="items")
-            .find_all("p", class_="name")[:4]
+            BeautifulSoup(response_text, "html.parser").find("ul", class_="items").find_all("p", class_="name")[:4]
         )
 
         paired_results = [
@@ -129,10 +114,3 @@ class AnimeScraper:
         ]
 
         return paired_results
-
-
-if __name__ == "__main__":
-    anime_scraper = AnimeScraper(input("Enter Anime URL: "))
-    anime_scraper.scrape_episodes(start=1, end=1)
-    anime_scraper.save_json(filename="../anime.json")
-    print("- Saved JSON file!")

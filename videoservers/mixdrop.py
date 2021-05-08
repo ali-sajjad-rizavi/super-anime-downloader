@@ -1,16 +1,17 @@
 import settings
+import models as mdl
 import requests
 import re
 
 
-def get_download_link(ep: dict) -> str:
+def get_download_link(ep: mdl.Episode) -> str:
     """
     Generates a download link for mixdrop embed video server
 
-    :param ep: Episode dictionary
+    :param ep: Episode model object
     :return: Download link of video from mixdrop
     """
-    embed_url = ep["embed-servers"].get("mixdrop")
+    embed_url = ep.video_data.get("mixdrop")
     if not embed_url:
         return None
 
@@ -37,4 +38,9 @@ def get_download_link(ep: dict) -> str:
 
 if __name__ == "__main__":
     # Example: https://mixdrop.co/e/7rgov1qpuk4rq7
-    print(get_download_link({"embed-servers": {"mixdrop": input("Enter mixdrop embed URL: ")}}))
+    epis = mdl.Episode(
+        title="Test episode",
+        url="Test URL",
+        video_data={"embed-servers": {"mixdrop": input("Enter mixdrop embed URL: ")}}
+    )
+    print(get_download_link(epis))

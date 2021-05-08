@@ -1,16 +1,17 @@
 import settings
+import models as mdl
 from bs4 import BeautifulSoup
 import requests
 
 
-def get_download_link(ep: dict) -> str:
+def get_download_link(ep: mdl.Episode) -> str:
     """
     Generates a download link for streamtape embed video server
 
-    :param ep: Episode dictionary
+    :param ep: Episode model object
     :return: Download link of video from streamtape
     """
-    embed_url = ep["embed-servers"].get("streamtape")
+    embed_url = ep.video_data.get("streamtape")
     if not embed_url:
         return None
 
@@ -35,6 +36,9 @@ def get_download_link(ep: dict) -> str:
 
 if __name__ == "__main__":
     # Example: https://streamtape.com/e/YqKyKxg23jivJDB/world-trigger-2nd-season-episode-10.mp4
-    print(
-        get_download_link({"embed-servers": {"streamtape": input("Enter streamtape embed URL: ")}})
+    epis = mdl.Episode(
+        title="Test title",
+        url="Test URL",
+        video_data={"embed-servers": {"streamtape": input("Enter streamtape embed URL: ")}}
     )
+    print(get_download_link(epis))
