@@ -53,7 +53,7 @@ class AnimeScraper:
             # the specified range of episodes.
             ep = mdl.Episode(
                 title=f"{self.anime.title} - {ep_title}",
-                url="https://www.gogoanime.so{}".format(li.find("a")["href"].strip())
+                url=settings.GOGOANIME_BASE_URL + li.find("a")["href"].strip()
             )
 
             # Append to list of episodes in anime model object
@@ -98,7 +98,7 @@ class AnimeScraper:
         :return: List of tuples containing title of anime and it's URL
         """
         response_text = requests.get(
-            "https://www.gogoanime.so/search.html?keyword={}".format(q.replace(" ", "%20"))
+            "{}/search.html?keyword={}".format(settings.GOGOANIME_BASE_URL, q.replace(" ", "%20"))
         ).text
 
         p_results = (
@@ -108,7 +108,7 @@ class AnimeScraper:
         paired_results = [
             (
                 p.find("a")["title"],
-                "https://www.gogoanime.so{}".format(p.find("a")["href"]),
+                settings.GOGOANIME_BASE_URL + p.find("a")["href"],
             )
             for p in p_results
         ]
