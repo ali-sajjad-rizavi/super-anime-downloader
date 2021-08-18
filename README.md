@@ -1,6 +1,3 @@
-# !!! NOTE !!!
-THE ANIME WEBSITE USED IN THIS PROJECT ( https://www2.gogoanime.sh/ ) IS NO LONGER AVAILABLE (at least in some countries). I'LL TRY TO FIND AN ALTERNATIVE SOON!
-
 # super-anime-downloader
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
