@@ -1,8 +1,7 @@
-beautifulsoup4==4.9.3
-bs4==0.0.1
-certifi==2021.5.30
-charset-normalizer==2.0.4
-idna==3.2
-requests==2.26.0
-soupsieve==2.2.1
-urllib3==1.26.6
+beautifulsoup4==4.12.3
+certifi==2024.8.30
+charset-normalizer==3.4.0
+idna==3.10
+requests==2.32.3
+soupsieve==2.6
+urllib3==2.2.3
